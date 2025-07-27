@@ -187,5 +187,5 @@ SELECT
   
 FROM students;
 
---#ayush lingayat
+
 
