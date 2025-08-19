@@ -29,4 +29,65 @@ INSERT INTO employee (firstname, lastname, age, salary, location) VALUES
 
 select location,count(location)as total_location ,avg(salary) as average_all from employee group by location;
 
+select firstname,lastname, location,count(location)as total_location ,avg(salary) as average_all from employee group by location;
+-- this will not work here okk remember that 
+
+-- we can try achieving it using a join 
+-- what i want actually i am writing here 
+
+
+-- firstname ,lastname ,location ,total_count ,average salary
+select firstname ,lastname ,location ,total_count ,average salary from employee join(select firstname,lastname, location,count(location) as total_count ,avg(salary) as average_salary from employee group by location) temptable on employee.location = temptable.location;
+
+SELECT employee.firstname,
+       employee.lastname,
+       employee.location,
+       temp_table.total_count,
+       temp_table.average_salary
+FROM employee employee
+JOIN (
+    SELECT location,
+           COUNT(location) AS total_count,
+           AVG(salary) AS average_salary
+    FROM employee
+    GROUP BY location
+) temp_table
+ON employee.location = temp_table.location;
+
+-- we achieved it using join but any other easy way to do that 
+
+-- we can use over and partion by to achieve it easily 
+
+-- phele sade column liya 
+-- phir aggregated column liya 
+-- phir over liya uske bracket kee andar naa
+-- likh sakhte hum kya group karna hee in our case location tha
+
+
+select firstname,lastname,location ,count(location) over(partion by location) from employee;
+
+-- hum naa partion by kee sath no aggregated column bhi use kar pare like firstname and lastname but jab hum group by kee sath nhi use kar paa rahe the yeeh advantage hota hee partion by kaa okk humesha yaad rakhna 
+
+
+-- How the above query internally works is 
+-- it partion firstly partion the data using location 
+-- after that it will count okk 
+-- after that select
+
+-- always remember first we have to do the aggregate function then partion by okk 
+
+
+select firstname,lastname,location ,count(location) over(partion by location),avg(salary) over(partion by location) from employee;
+
+
+SELECT
+    firstname,
+    lastname,
+    location,
+    COUNT(location) OVER (PARTITION BY location) AS location_count,
+    AVG(salary) OVER (PARTITION BY location) AS average_salary
+FROM
+    employee;
+
+-- use partion by to club non aggregated columns with aggreated columns super useful and handy okk 
 
